@@ -1,0 +1,261 @@
+Ejercicio 1
+Comando -> dig @127.0.0.1 -p 8600 mymicroservice.service.consul
+Respuesta -> ; <<>> DiG 9.18.28-0ubuntu0.22.04.1-Ubuntu <<>> @127.0.0.1 -p 8600 mymicroservice.service.consul
+; (1 server found)
+;; global options: +cmd
+;; Got answer:
+;; ->>HEADER<<- opcode: QUERY, status: NXDOMAIN, id: 25162
+;; flags: qr aa rd; QUERY: 1, ANSWER: 0, AUTHORITY: 1, ADDITIONAL: 1
+;; WARNING: recursion requested but not available
+
+;; OPT PSEUDOSECTION:
+; EDNS: version: 0, flags:; udp: 1232
+;; QUESTION SECTION:
+;mymicroservice.service.consul.	IN	A
+
+;; AUTHORITY SECTION:
+consul.			0	IN	SOA	ns.consul. hostmaster.consul. 1723897158 3600 600 86400 0
+
+;; Query time: 4 msec
+;; SERVER: 127.0.0.1#8600(127.0.0.1) (UDP)
+;; WHEN: Sat Aug 17 12:19:18 UTC 2024
+;; MSG SIZE  rcvd: 108
+
+; <<>> DiG 9.18.28-0ubuntu0.22.04.1-Ubuntu <<>> @127.0.0.1 -p 8600 mymicroservice.service.consul
+; (1 server found)
+;; global options: +cmd
+;; Got answer:
+;; ->>HEADER<<- opcode: QUERY, status: NOERROR, id: 23635
+;; flags: qr aa rd; QUERY: 1, ANSWER: 1, AUTHORITY: 0, ADDITIONAL: 1
+;; WARNING: recursion requested but not available
+
+;; OPT PSEUDOSECTION:
+; EDNS: version: 0, flags:; udp: 1232
+;; QUESTION SECTION:
+;mymicroservice.service.consul.	IN	A
+
+;; ANSWER SECTION:
+mymicroservice.service.consul. 0 IN	A	192.168.56.3
+
+;; Query time: 0 msec
+;; SERVER: 127.0.0.1#8600(127.0.0.1) (UDP)
+;; WHEN: Sat Aug 17 12:31:44 UTC 2024
+;; MSG SIZE  rcvd: 74
+
+
+Explicacion -> 
+El comando dig consulta el servicio DNS en la direccion ip, y del puerto 8600
+y consulta al microservicio de consul
+El primer ejemplo fue antes de correr el comando index.js 3000 y da un mensaje de nxdomain que dice que no encontro el dominio solicitado
+Donde ya en el segundo se puede ver que se obtuvo una respuesta del servidor 
+
+
+Ejercicio 2
+Comando -> dig @127.0.0.1 -p 8600 mymicroservice.service.consul SRV
+Respuesta -> ; <<>> DiG 9.18.28-0ubuntu0.22.04.1-Ubuntu <<>> @127.0.0.1 -p 8600 mymicroservice.service.consul SRV
+; (1 server found)
+;; global options: +cmd
+;; Got answer:
+;; ->>HEADER<<- opcode: QUERY, status: NXDOMAIN, id: 25908
+;; flags: qr aa rd; QUERY: 1, ANSWER: 0, AUTHORITY: 1, ADDITIONAL: 1
+;; WARNING: recursion requested but not available
+
+;; OPT PSEUDOSECTION:
+; EDNS: version: 0, flags:; udp: 1232
+;; QUESTION SECTION:
+;mymicroservice.service.consul.	IN	SRV
+
+;; AUTHORITY SECTION:
+consul.			0	IN	SOA	ns.consul. hostmaster.consul. 1723897368 3600 600 86400 0
+
+;; Query time: 0 msec
+;; SERVER: 127.0.0.1#8600(127.0.0.1) (UDP)
+;; WHEN: Sat Aug 17 12:22:48 UTC 2024
+;; MSG SIZE  rcvd: 108
+
+; <<>> DiG 9.18.28-0ubuntu0.22.04.1-Ubuntu <<>> @127.0.0.1 -p 8600 mymicroservice.service.consul SRV
+; (1 server found)
+;; global options: +cmd
+;; Got answer:
+;; ->>HEADER<<- opcode: QUERY, status: NOERROR, id: 64819
+;; flags: qr aa rd; QUERY: 1, ANSWER: 1, AUTHORITY: 0, ADDITIONAL: 4
+;; WARNING: recursion requested but not available
+
+;; OPT PSEUDOSECTION:
+; EDNS: version: 0, flags:; udp: 1232
+;; QUESTION SECTION:
+;mymicroservice.service.consul.	IN	SRV
+
+;; ANSWER SECTION:
+mymicroservice.service.consul. 0 IN	SRV	1 1 3000 c0a83803.addr.dc1.consul.
+
+;; ADDITIONAL SECTION:
+c0a83803.addr.dc1.consul. 0	IN	A	192.168.56.3
+servidorUbuntu.node.dc1.consul.	0 IN	TXT	"consul-network-segment="
+servidorUbuntu.node.dc1.consul.	0 IN	TXT	"consul-version=1.19.1"
+
+;; Query time: 0 msec
+;; SERVER: 127.0.0.1#8600(127.0.0.1) (UDP)
+;; WHEN: Sat Aug 17 12:35:35 UTC 2024
+;; MSG SIZE  rcvd: 208
+
+
+Explicacion -> 
+
+Ejercicio 3
+
+Comando -> curl http://localhost:8500/v1/catalog/service/mymicroservice
+Respuesta -> curl: (6) Could not resolve host: l
+[
+    {
+        "ID": "88012586-782e-1879-2408-86ac9d577faf",
+        "Node": "servidorUbuntu",
+        "Address": "192.168.56.3",
+        "Datacenter": "dc1",
+        "TaggedAddresses": {
+            "lan": "192.168.56.3",
+            "lan_ipv4": "192.168.56.3",
+            "wan": "192.168.56.3",
+            "wan_ipv4": "192.168.56.3"
+        },
+        "NodeMeta": {
+            "consul-network-segment": "",
+            "consul-version": "1.19.1"
+        },
+        "ServiceKind": "",
+        "ServiceID": "m3000",
+        "ServiceName": "mymicroservice",
+        "ServiceTags": [],
+        "ServiceAddress": "192.168.56.3",
+        "ServiceTaggedAddresses": {
+            "lan_ipv4": {
+                "Address": "192.168.56.3",
+                "Port": 3000
+            },
+            "wan_ipv4": {
+                "Address": "192.168.56.3",
+                "Port": 3000
+            }
+        },
+        "ServiceWeights": {
+            "Passing": 1,
+            "Warning": 1
+        },
+        "ServiceMeta": {},
+        "ServicePort": 3000,
+        "ServiceSocketPath": "",
+        "ServiceEnableTagOverride": false,
+        "ServiceProxy": {
+            "Mode": "",
+            "MeshGateway": {},
+            "Expose": {}
+        },
+        "ServiceConnect": {},
+        "ServiceLocality": null,
+        "CreateIndex": 128,
+        "ModifyIndex": 128
+    }
+
+Explicacion ->
+
+Ejercicio 4
+
+Comando -> curl 'http://localhost:8500/v1/health/service/mymicroservice?passing'
+Respuesta -> [
+    {
+        "Node": {
+            "ID": "88012586-782e-1879-2408-86ac9d577faf",
+            "Node": "servidorUbuntu",
+            "Address": "192.168.56.3",
+            "Datacenter": "dc1",
+            "TaggedAddresses": {
+                "lan": "192.168.56.3",
+                "lan_ipv4": "192.168.56.3",
+                "wan": "192.168.56.3",
+                "wan_ipv4": "192.168.56.3"
+            },
+            "Meta": {
+                "consul-network-segment": "",
+                "consul-version": "1.19.1"
+            },
+            "CreateIndex": 11,
+            "ModifyIndex": 15
+        },
+        "Service": {
+            "ID": "m3000",
+            "Service": "mymicroservice",
+            "Tags": [],
+            "Address": "192.168.56.3",
+            "TaggedAddresses": {
+                "lan_ipv4": {
+                    "Address": "192.168.56.3",
+                    "Port": 3000
+                },
+                "wan_ipv4": {
+                    "Address": "192.168.56.3",
+                    "Port": 3000
+                }
+            },
+            "Meta": null,
+            "Port": 3000,
+            "Weights": {
+                "Passing": 1,
+                "Warning": 1
+            },
+            "EnableTagOverride": false,
+            "Proxy": {
+                "Mode": "",
+                "MeshGateway": {},
+                "Expose": {}
+            },
+            "Connect": {},
+            "PeerName": "",
+            "CreateIndex": 128,
+            "ModifyIndex": 128
+        },
+        "Checks": [
+            {
+                "Node": "servidorUbuntu",
+                "CheckID": "serfHealth",
+                "Name": "Serf Health Status",
+                "Status": "passing",
+                "Notes": "",
+                "Output": "Agent alive and reachable",
+                "ServiceID": "",
+                "ServiceName": "",
+                "ServiceTags": [],
+                "Type": "",
+                "Interval": "",
+                "Timeout": "",
+                "ExposedPort": 0,
+                "Definition": {},
+                "CreateIndex": 11,
+                "ModifyIndex": 11
+            },
+            {
+                "Node": "servidorUbuntu",
+                "CheckID": "service:m3000",
+                "Name": "Service 'mymicroservice' check",
+                "Status": "passing",
+                "Notes": "",
+                "Output": "HTTP GET http://192.168.56.3:3000/health: 200 OK Output: Ok.",
+                "ServiceID": "m3000",
+                "ServiceName": "mymicroservice",
+                "ServiceTags": [],
+                "Type": "http",
+                "Interval": "5s",
+                "Timeout": "5s",
+                "ExposedPort": 0,
+                "Definition": {},
+                "CreateIndex": 128,
+                "ModifyIndex": 129
+            }
+        ]
+    }
+]
+
+Explicacion -> 
+
+
+
+
